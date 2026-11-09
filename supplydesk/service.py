@@ -16,6 +16,13 @@ class OrderService:
     def catalog(self):
         return self.store.load()["catalog"]
     
+    def _find_product(self, catalog, product_id):
+        for product in catalog:
+            if product["product_id"] == product_id:
+                return product
+        return None
+
+    
     def quote(self, customer_type, items, fulfillment="pickup"):
         state = self.store.load()
         return self._calculate_quote(state, customer_type, items, fulfillment)
@@ -36,11 +43,11 @@ class OrderService:
         for item in items:
             if not isinstance(item, dict):
                 raise ValueError("Each item must contain a product_id and quantity.")
-            product = None
-            for candidate in state["catalog"]:
-                if candidate["product_id"] == item.get("product_id"):
-                    product = candidate
-                    break
+            
+            product = self._find_product(
+                state["catalog"], item.get("product_id")
+            )
+
             if product is None:
                 raise ValueError("Unknown product.")
             quantity = item.get("quantity")
