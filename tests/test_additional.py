@@ -74,5 +74,39 @@ class AdditionalTests(unittest.TestCase):
 
         self.assertEqual(final_stock, original_stock)
 
+    def test_express_delivery_quote(self):
+        quote = self.service.quote(
+            "regular",
+            [{"product_id": "notebook", "quantity": 2}],
+            "express"
+        )
+
+        self.assertEqual(quote["delivery_cents"], 1200)
+        self.assertEqual(quote["total_cents"], 2200)
+
+    def test_express_order_is_saved(self):
+        order = self.service.place_order(
+            "regular",
+            [{"product_id": "notebook", "quantity": 2}],
+            "express"
+        )
+
+        saved_order = self.service.get_order(order["order_id"])
+
+        self.assertEqual(saved_order["fulfillment"], "express")
+        self.assertEqual(saved_order["delivery_cents"], 1200)
+        self.assertEqual(saved_order["total_cents"], 2200)
+
+    def test_express_delivery_still_charges_for_large_order(self):
+        quote = self.service.quote(
+            "regular",
+            [{"product_id": "hoodie", "quantity": 3}],
+            "express"
+        )
+
+        self.assertEqual(quote["subtotal_cents"], 12000)
+        self.assertEqual(quote["delivery_cents"], 1200)
+        self.assertEqual(quote["total_cents"], 13200)
+
 if __name__ == "__main__":
     unittest.main()
