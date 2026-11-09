@@ -137,7 +137,7 @@ class OrderService:
             raise ValueError("Unknown order: " + order_id)
         
         if order["status"] == "cancelled":
-            raise ValueError("Order is already cancelled.")
+            return order
 
         for line in order["items"]:
             for product in state["catalog"]:
