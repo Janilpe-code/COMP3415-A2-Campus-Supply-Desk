@@ -214,3 +214,30 @@ These commands use the same orders and stock as the interactive menu opened with
 python -m supplydesk --help
 python -m supplydesk quote --help
 ```
+
+## Express Delivery (CR-01)
+
+The application now supports three fulfillment options: pickup, standard delivery and express delivery.
+
+Express delivery costs $12.00 for every order. This fee is always charged even when the order qualifies for free standard delivery.
+
+Customers can choose express delivery in the interactive menu or through terminal commands.
+
+### Example Command
+
+```powershell
+py -m supplydesk quote --customer regular --fulfillment express --item notebook:2
+```
+
+For this example two notebooks cost $10.00. Express delivery adds $12.00 so the final total is $22.00.
+
+### Testing
+
+Run all automated tests with:
+
+```powershell
+py -m unittest discover -s tests -v
+```
+
+All 12 automated tests passed after the changes.
+  
